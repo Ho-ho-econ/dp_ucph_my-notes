@@ -55,8 +55,10 @@ def solve_deaton_infty(par):
         
         for iw,w in enumerate(par.grid_W):
             #fill in start
-            c = grid_C*w
+            
+            c = grid_C * w
             w_c = w - c
+            EV_next=0
 
             for s in range(par.num_shocks):
                 #weight of the shock
@@ -67,15 +69,18 @@ def solve_deaton_infty(par):
 
                 # next period assets
                 w_next = par.R * w_c + eps
+                
+                # expected value with this shock
+                EV_next += weight * interp(w_next) #linear interpolation from above
+                    
 
-                V_guess = util(c,par) + par.beta * interp(w_next) # Here I get this error: "unsupported operand type(s) for *: 'float' and 'interp1d'"
-                index = np.argmax(V_guess)
-                sol.C[iw] = c[index]
-                sol.V[iw] = np.amax(V_guess)
+            V_guess = util(c,par) + par.beta * EV_next
+            index = np.argmax(V_guess)
+            sol.C[iw] = c[index]
+            sol.V[iw] = np.amax(V_guess)
 
-
-            # fill in end
-            sol.it += 1
-            sol.delta = max(abs(sol.V - V0)) 
+        # fill in end
+        sol.it += 1
+        sol.delta = max(abs(sol.V - V0)) 
     
     return sol

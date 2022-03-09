@@ -39,7 +39,7 @@ def solve_consumption_deaton(par):
                     w_next = par.R * w_c + eps
                     
                     # expected value with this shock
-                    EV_next += weight * np.interp(w_next + eps,sol.grid_W[:,t+1],sol.V[:,t+1]) #linear interpolation
+                    EV_next += weight * np.interp(w_next,sol.grid_W[:,t+1],sol.V[:,t+1]) #linear interpolation
                     
                     
                     # fill in end

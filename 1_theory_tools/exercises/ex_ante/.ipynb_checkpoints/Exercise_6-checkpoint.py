@@ -2,7 +2,7 @@
 import numpy as np
 
 def util(c,par):
-    return (c**(1.0-par.rho))/(1.0-par.rho)
+    return (c**(1.0-par.rho))/(1.0-par.rho) # definition of new utility function.
 
 def solve_consumption_deaton(par):
      # initialize solution class
@@ -27,14 +27,25 @@ def solve_consumption_deaton(par):
         
             if t<par.T-1:
                 for s in range(par.num_shocks):
-                    # fill in
+                    # fill in start
+                    
+                    #weight of the shock
+                    weight = par.eps_w[s]
+                    
+                    # epsilon shock
+                    eps = par.eps[s]
+                    
+                    # next period assets
+                    w_next = par.R * w_c + eps
+                    
+                    # expected value with this shock
+                    EV_next += weight * np.interp(w_next,sol.grid_W[:,t+1],sol.V[:,t+1]) #linear interpolation
                     
                     
+                    # fill in end
+                                        
                     
-                    
-                    
-                    
-            V_guess = util(c,par)+par.beta*EV_next
+            V_guess = util(c,par) + par.beta * EV_next # here the new utility function enters
             index = np.argmax(V_guess)
             sol.C[iw,t] = c[index]
             sol.V[iw,t] = np.amax(V_guess)
